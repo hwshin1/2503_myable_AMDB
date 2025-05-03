@@ -1,9 +1,6 @@
 package org.example;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -31,9 +28,9 @@ public class Main {
                 System.out.print("제목 : ");
                 String title = sc.nextLine().trim();
                 System.out.print("내용 : ");
-                String content = sc.nextLine().trim();
+                String body = sc.nextLine().trim();
 
-                Article article = new Article(id, title, content);
+                Article article = new Article(id, title, body);
                 articles.add(article);
 
                 lastArticleId++;
@@ -52,7 +49,7 @@ public class Main {
                     sql += " SET regDate = now(),";
                     sql += " updateDate = now(),";
                     sql += " title = '" + title + "' ,";
-                    sql += " `body` = '" + content + "' ;";
+                    sql += " `body` = '" + body + "' ;";
 
                     System.out.println(sql);
                     pstmt = conn.prepareStatement(sql);
