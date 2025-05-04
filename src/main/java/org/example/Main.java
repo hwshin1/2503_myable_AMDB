@@ -119,6 +119,60 @@ public class Main {
                 for (Article article : articles) {
                     System.out.printf("   %d   /   %s   \n", article.getId(), article.getTitle());
                 }
+            } else if (cmd.startsWith("article modify")) {
+                int id = 0;
+
+                // 있는지 없는지 체크
+                try {
+                    id = Integer.parseInt(cmd.split(" ")[2]);
+                } catch (Exception e) {
+                    System.out.println("정수 입력" + e);
+                    continue;
+                }
+
+                System.out.println("== 글 수정 ==");
+                System.out.print("새 제목 : ");
+                String title = sc.nextLine().trim();
+                System.out.print("새 내용 : ");
+                String body = sc.nextLine().trim();
+
+                Connection conn = null;
+                PreparedStatement pstmt = null;
+
+                try {
+                    Class.forName("org.mariadb.jdbc.Driver");
+                    String url = "jdbc:mariadb://localhost:3306/JDBC?useUnicode=true&characterEncoding=utf8&autoReconnect=true&serverTimezone=Asia/Seoul";
+                    conn = DriverManager.getConnection(url, "root", "");
+                    System.out.println("연결 성공!");
+
+                    String sql = "UPDATE article ";
+                    sql += "SET updateDate = now(),";
+                    if (title.length() > 0) {
+                        sql += " title = '" + title + "',";
+                    }
+                    if (body.length() > 0) {
+                        sql += " `body` = '" + body + "'";
+                    }
+                    sql += " WHERE id = " + id + ";";
+
+                    System.out.println(sql);
+                    pstmt = conn.prepareStatement(sql);
+
+                    int affectedRows = pstmt.executeUpdate();
+                    System.out.println("DML시 실제로 영향을 미친 데이터 Row 수 : " + affectedRows);
+                } catch (ClassNotFoundException e) {
+                    System.out.println("드라이버 로딩 실패" + e);
+                } catch (SQLException e) {
+                    System.out.println("에러 : " + e);
+                } finally {
+                    try {
+                        if (conn != null && !conn.isClosed()) {
+                            conn.close();
+                        }
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         }
 
