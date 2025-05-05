@@ -36,7 +36,7 @@ public class DBUtil {
 
                 for (int columnIndex = 0; columnIndex < columnSize; columnIndex++) {
                     String columnName = metaData.getColumnName(columnIndex + 1);
-                    Object columnValue = rs.getObject(columnIndex);
+                    Object columnValue = rs.getObject(columnName);
 
                     if (columnValue instanceof Long) {
                         int numValue = (int) (long) columnValue;
@@ -49,6 +49,7 @@ public class DBUtil {
                         row.put(columnName, columnValue);
                     }
                 }
+                rows.add(row);
             }
         } catch (SQLException e) {
             throw new SQLErrorException("SQL 예외, SQL : " + sql, e);
