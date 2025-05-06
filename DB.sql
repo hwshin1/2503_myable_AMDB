@@ -11,6 +11,16 @@ CREATE TABLE article(
                         `body` TEXT
 );
 
+
+CREATE TABLE `member` (
+                          id INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+                          regDate DATETIME NOT NULL,
+                          updateDate DATETIME NOT NULL,
+                          loginId CHAR(30) NOT NULL,
+                          loginPw CHAR(200) NOT NULL,
+                          `name` CHAR(100) NOT NULL
+);
+
 SELECT * FROM article;
 
 INSERT INTO article
@@ -33,3 +43,12 @@ SET regDate = NOW(),
 
 SELECT * FROM article
 ORDER BY id DESC;
+
+SELECT * FROM `member`;
+
+INSERT INTO `member`
+SET regDate = NOW(),
+    updateDate = NOW(),
+    loginId = 'test1',
+    loginPw = 'test1',
+    `name` = '홍길동';

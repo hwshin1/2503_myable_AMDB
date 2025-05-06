@@ -1,6 +1,5 @@
 package org.example;
 
-import org.checkerframework.checker.units.qual.A;
 import org.example.util.DBUtil;
 import org.example.util.SecSql;
 
@@ -57,7 +56,88 @@ public class App {
             return -1;
         }
 
-        if (cmd.equals("article write")) {
+        if (cmd.equals("member join")) {
+            String loginId = null;
+            String password = null;
+            String pwConfirm = null;
+            String name = null;
+
+            System.out.println("== 회원가입 ==");
+
+            while (true) {
+                System.out.print("로그인 아이디 : ");
+                loginId = sc.nextLine().trim();
+
+                if (loginId.isEmpty() || loginId.contains(" ")) {
+                    System.out.println("아이디를 올바르게 입력해주세요.");
+                    continue;
+                }
+
+                SecSql sql = new SecSql();
+
+                sql.append("SELECT COUNT(*) > 0");
+                sql.append("FROM `member`");
+                sql.append("WHERE loginId = ?;", loginId);
+
+                boolean isLoginIdDup = DBUtil.selectRowBooleanValue(conn, sql);
+
+                System.out.println(isLoginIdDup);
+
+                if (isLoginIdDup) {
+                    System.out.println("이 아이디는 이미 사용중 입니다.");
+                    continue;
+                }
+                break;
+            }
+
+            while (true) {
+                System.out.print("비밀번호 : ");
+                password = sc.nextLine().trim();
+
+                if (password.isEmpty() || password.contains(" ")) {
+                    System.out.println("비밀번호를 올바르게 입력해주세요.");
+                }
+
+                boolean loginCheckPw = true;
+
+                while (true) {
+                    System.out.print("비밀번호 확인 : ");
+                    pwConfirm = sc.nextLine().trim();
+
+                    if (!password.equals(pwConfirm)) {
+                        System.out.println("비밀번호가 일치하지 않습니다.");
+                        loginCheckPw = false;
+                    }
+                    break;
+                }
+
+                if (loginCheckPw) {
+                    break;
+                }
+            }
+
+            while (true) {
+                System.out.print("이름 : ");
+                name = sc.nextLine().trim();
+
+                if (name.isEmpty() || name.contains(" ")) {
+                    System.out.println("이름을 올바르게 입력해주세요.");
+                    continue;
+                }
+                break;
+            }
+
+            SecSql sql = new SecSql();
+            sql.append("INSERT INTO `member`");
+            sql.append("SET regDate = NOW(),");
+            sql.append("updateDate = NOW(),");
+            sql.append("loginId = ?,", loginId);
+            sql.append("loginPw = ?,", password);
+            sql.append("`name` = ?;", name);
+
+            int id = DBUtil.insert(conn, sql);
+            System.out.println(id + "번 회원이 가입되었습니다.");
+        } else if (cmd.equals("article write")) {
             System.out.println("== 글쓰기 ==");
             System.out.print("제목 : ");
             String title = sc.nextLine().trim();
